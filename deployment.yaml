@@ -1,33 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask-apk
+  name: calculator-app
 spec:
-  replicas: 1  
+  replicas: 1
   selector:
     matchLabels:
-      app: flask-apk  # The label should match the one in the pod template
+      app: calculator-app
   template:
     metadata:
       labels:
-        app: flask-apk  # Adding the label here...
+        app: calculator-app
     spec:
       containers:
-        - name: flask-apk
-          image: mdirshaq/flask-web-app:v1
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 5000
+      - name: calculator-app
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: 8085
+        # env:
+        # - name: SPRING_PROFILES_ACTIVE
+        #   value: "prod"
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: web-service
+  name: calculator-app-service
 spec:
-  type: LoadBalancer
   selector:
-    app: flask-apk  # This should match the label in the Deployment
+    app: calculator-app
   ports:
-    - port: 5000
-      targetPort: 5000
+    - protocol: TCP
+      port: 80
+      targetPort: 8085
+  type: LoadBalancer  # If using a cloud provider, otherwise use ClusterIP
