@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       labels:
-        app: flask-apk  # Adding the label here
+        app: flask-apk  # Adding the label here...
     spec:
       containers:
         - name: flask-apk
